@@ -11,7 +11,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.util.Base64
 import android.util.Log
+import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchaseHistoryRecord
 import com.revenuecat.purchases.util.Iso8601Utils
 import org.json.JSONException
 import org.json.JSONObject
@@ -37,6 +39,9 @@ internal fun errorLog(message: String) {
 
 internal fun Purchase.toHumanReadableDescription() =
     "${this.sku} ${this.orderId} ${this.purchaseToken}"
+
+internal fun PurchaseHistoryRecord.toHumanReadableDescription() =
+    "${this.sku} ${this.purchaseTime} ${this.purchaseToken}"
 
 internal fun Parcel.readStringDateMap(): Map<String, Date?> {
     return readInt().let { size ->
@@ -187,3 +192,6 @@ internal fun String.sha1() =
         .digest(this.toByteArray()).let {
             String(Base64.encode(it, Base64.NO_WRAP))
         }
+
+internal fun BillingResult.toHumanReadableDescription() =
+    "DebugMessage: $debugMessage. ErrorCode: ${responseCode.getBillingResponseCodeName()}."
