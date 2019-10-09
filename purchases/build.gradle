@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.dokka'
 
 android {
     compileSdkVersion 28
@@ -19,8 +20,52 @@ android {
         main.java.srcDirs += 'src/main/java'
         test.java.srcDirs += 'src/test/java'
     }
-}
 
+
+
+}
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$rootDir/docs"
+    configuration {
+        moduleName = 'purchases'
+        includes = ['README.md']
+        reportUndocumented = true
+        includeNonPublic = false
+        skipDeprecated = true
+        sourceRoots = [files('src/main/kotlin')]
+
+        // Specifies the location of the project source code on the Web.
+        // If provided, Dokka generates "source" links for each declaration.
+        // Repeat for multiple mappings
+        sourceLink {
+            // Source directory
+            path = "src/main/kotlin"
+
+            // URL showing where the source code can be accessed through the web browser
+            url = "https://github.com/revenuecat/purchases-android/blob/master/src/main/kotlin"
+
+            // Suffix which is used to append the line number to the URL. Use #L for GitHub
+            lineSuffix = "#L"
+        }
+        // Suppress a package
+        perPackageOption {
+            prefix = "com.revenuecat.purchases.util"
+            // will match kotlin.internal and all sub-packages of it
+            suppress = true
+        }
+        perPackageOption {
+            prefix = "com.revenuecat.purchases"
+            // will match kotlin.internal and all sub-packages of it
+            suppress = false
+        }
+
+        externalDocumentationLink {
+            url = new URL("https://developer.android.com/reference/")
+            packageListUrl = new URL("https://developer.android.com/reference/android/billingclient/api/package-list")
+        }
+    }
+}
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -38,45 +83,5 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.12.2'
 }
 
-apply plugin: 'org.jetbrains.dokka-android'
 apply plugin: 'com.vanniktech.maven.publish'
 
-dokka {
-    moduleName = 'purchases'
-    includes = ['README.md']
-    reportUndocumented = true
-    includeNonPublic = false
-    skipDeprecated = true
-    outputFormat = 'html'
-    outputDirectory = "$rootDir/docs"
-    sourceDirs = files('src/main/kotlin')
-
-    // Specifies the location of the project source code on the Web.
-    // If provided, Dokka generates "source" links for each declaration.
-    // Repeat for multiple mappings
-    linkMapping {
-        // Source directory
-        dir = "src/main/kotlin"
-
-        // URL showing where the source code can be accessed through the web browser
-        url = "https://github.com/revenuecat/purchases-android/blob/master/src/main/kotlin"
-
-        // Suffix which is used to append the line number to the URL. Use #L for GitHub
-        suffix = "#L"
-    }
-    // Suppress a package
-    packageOptions {
-        prefix = "com.revenuecat.purchases.util" // will match kotlin.internal and all sub-packages of it
-        suppress = true
-    }
-    packageOptions {
-        prefix = "com.revenuecat.purchases" // will match kotlin.internal and all sub-packages of it
-        suppress = false
-    }
-
-    externalDocumentationLink {
-        url = new URL("https://developer.android.com/reference/")
-        packageListUrl = new URL("https://developer.android.com/reference/android/billingclient/api/package-list")
-    }
-
-}
