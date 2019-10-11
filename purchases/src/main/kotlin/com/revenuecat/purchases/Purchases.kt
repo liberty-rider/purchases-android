@@ -15,21 +15,16 @@ import android.os.Looper
 import android.preference.PreferenceManager
 import android.util.Log
 import androidx.annotation.VisibleForTesting
-import com.android.billingclient.api.*
-import com.revenuecat.purchases.BillingWrapper.PurchasesUpdatedListener
-import com.revenuecat.purchases.interfaces.Callback
-import com.revenuecat.purchases.interfaces.GetSkusResponseListener
-import com.revenuecat.purchases.interfaces.MakePurchaseListener
-import com.revenuecat.purchases.interfaces.ReceiveEntitlementsListener
-import com.revenuecat.purchases.interfaces.ReceivePurchaserInfoListener
-import com.revenuecat.purchases.interfaces.UpdatedPurchaserInfoListener
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.SkuDetails
+import com.revenuecat.purchases.interfaces.*
 import com.revenuecat.purchases.util.AdvertisingIdClient
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
 import java.util.Collections.emptyMap
-import java.util.Date
-import java.util.HashMap
-import java.util.UUID
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
@@ -250,14 +245,30 @@ class Purchases @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE) intern
      * Make a purchase.
      * @param [activity] Current activity
      * @param [skuDetails] The skuDetails of the product you wish to purchase
-     * @param [upgradeInfo] The upgradeInfo you wish to upgrade from containing the oldSku and the optional prorationMode.
+     * @param [oldSku] The sku you wish to upgrade from.
      * @param [listener] The listener that will be called when purchase completes.
      */
     fun makePurchase(
         activity: Activity,
         skuDetails: SkuDetails,
-        upgradeInfo: UpgradeInfo,
+        oldSku: String,
         listener: MakePurchaseListener
+    ) {
+        startPurchase(activity, skuDetails, UpgradeInfo(oldSku), listener)
+    }
+
+    /**
+     * Make a purchase.
+     * @param [activity] Current activity
+     * @param [skuDetails] The skuDetails of the product you wish to purchase
+     * @param [upgradeInfo] The upgradeInfo you wish to upgrade from containing the oldSku and the optional prorationMode.
+     * @param [listener] The listener that will be called when purchase completes.
+     */
+    fun makePurchase(
+            activity: Activity,
+            skuDetails: SkuDetails,
+            upgradeInfo: UpgradeInfo,
+            listener: MakePurchaseListener
     ) {
         startPurchase(activity, skuDetails, upgradeInfo, listener)
     }

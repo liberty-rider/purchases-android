@@ -155,7 +155,7 @@ internal class BillingWrapper internal constructor(
             upgradeInfo: UpgradeInfo?
     ) {
         if (upgradeInfo != null) {
-            debugLog("Upgrading old sku $upgradeInfo with sku: ${skuDetails.sku}")
+            debugLog("Upgrading old sku ${upgradeInfo.oldSku} with sku: ${skuDetails.sku}")
         } else {
             debugLog("Making purchase for sku: ${skuDetails.sku}")
         }
